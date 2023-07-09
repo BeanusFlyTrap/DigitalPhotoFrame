@@ -14,7 +14,7 @@ class App():
     def __init__(self):
         self.root = tk.Tk()
         
-        self.root_photo_folder = "<Insert foldername here>"
+        self.root_photo_folder = input("Please enter a folder name") #Change to update config file of some description in future
         self.photo_list = os.listdir(self.root_photo_folder)
         self.photoCounter = 0
         initial_photo = Image.open((self.root_photo_folder+"\\"+self.photo_list[self.photoCounter]))
