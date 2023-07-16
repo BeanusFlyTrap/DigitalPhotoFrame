@@ -1,14 +1,7 @@
-#this file dont work yet
-
-import tkinter as tk
-from PIL import Image, ImageTk
-from time import sleep
-import os
-
-def resize_ratio(max_height, height):
-    ratio = min(max_height/height)
-    return (height)
-
+# Import the Required Modules
+import tkinter as tk #Used for the Main Display Output
+from PIL import Image, ImageTk #Used for Image Handling / Re-sizing
+import os #Used for Image file Handling
 
 class App():
     def __init__(self):
@@ -22,8 +15,15 @@ class App():
                 initial_photo = Image.open((self.root_photo_folder+"\\"+self.photo_list[self.photoCounter]))
                 converted_photo = ImageTk.PhotoImage(initial_photo)
                 break
-            except:
+            except Exception as e:
                 self.photoCounter += 1
+                if self.photoCounter == len(self.photo_list):
+                    self.photoCounter = 0
+                else:
+                    pass
+                # No other condition needed
+                print(e)
+
 
         self.label = tk.Label(image=converted_photo, \
                               borderwidth=0           )
