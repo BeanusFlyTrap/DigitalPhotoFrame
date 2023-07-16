@@ -34,9 +34,11 @@ class App():
             maxheight = int(self.root.winfo_screenheight())
             maxwidth = int(self.root.winfo_screenwidth())
             WinSize = (maxwidth, maxheight)
+
             photo = Image.open((self.root_photo_folder+"\\"+self.photo_list[self.photoCounter]))
             photo.thumbnail(WinSize)
             converted_photo = ImageTk.PhotoImage(photo)
+            
             self.label.configure(image=converted_photo)
             self.label.image=converted_photo
             self.photoCounter +=1
