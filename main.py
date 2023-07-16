@@ -15,9 +15,9 @@ class App():
         self.root = tk.Tk()
         
         self.root_photo_folder = input("Please enter a folder name") #Change to update config file of some description in future
-        self.photo_list = os.listdir(self.root_photo_folder)
-        self.photoCounter = 0
-        while True:
+        self.photo_list = os.listdir(self.root_photo_folder) #Creates a list of files in the folder provided -> this needs to be filtered for image files as it will allow the removal of handling for incompatible files
+        self.photoCounter = 0 #Acts as a pointer for the image on screen
+        while True: #Handles potential files incompatible with the image
             try: 
                 initial_photo = Image.open((self.root_photo_folder+"\\"+self.photo_list[self.photoCounter]))
                 converted_photo = ImageTk.PhotoImage(initial_photo)
@@ -25,8 +25,11 @@ class App():
             except:
                 self.photoCounter += 1
 
-        self.label = tk.Label(image=converted_photo)
-        self.label.place(relx=0.5, rely=0.5, anchor="center")
+        self.label = tk.Label(image=converted_photo, \
+                              borderwidth=0           )
+        self.label.place(relx=0.5,      \
+                         rely=0.5,      \
+                         anchor="center" ) #Centers the image in the window
 
         #self.label.pack()
         self.update_image()
