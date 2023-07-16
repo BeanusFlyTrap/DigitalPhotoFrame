@@ -57,28 +57,8 @@ class App():
                  
             self.root.after(1500, self.update_image)
             
-            #(width, height) = photo.size
-            #print("Height: {}, Width: {}".format(height, width))
-            #maxheight = int(self.root.winfo_screenheight())
-            #maxwwidth = int(self.root.winfo_screenwidth())
-            #print("maxHeight: {}, maxWidth: {}".format(maxheight, maxwwidth))
-            #if ((height > maxheight) or (width > maxwwidth)):
-            #    ratio = min(width/maxwwidth, height/maxheight)
-            #    print(ratio)
-            #    resized_photo = photo.resize((int(height*ratio),int(width*ratio)), Image.BILINEAR )
-            #    converted_photo = ImageTk.PhotoImage(resized_photo)
-            #    self.label.configure(image=converted_photo)
-            #    self.label.image=converted_photo
-            #    self.photoCounter +=1
-            #    self.root.after(1000, self.update_image)
-            #else:            
-            #    converted_photo = ImageTk.PhotoImage(photo)
-            #    self.label.configure(image=converted_photo)
-            #    self.label.image=converted_photo
-            #    self.photoCounter +=1
-            #    self.root.after(1000, self.update_image)
         except Exception as e:
-            #do nothing
+            #Attempt to Move to next file (hopefully an image one)
             print(e)
             self.photoCounter +=1
             self.root.after(100, self.update_image)
