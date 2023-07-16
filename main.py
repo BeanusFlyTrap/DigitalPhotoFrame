@@ -17,14 +17,18 @@ class App():
         self.root_photo_folder = input("Please enter a folder name") #Change to update config file of some description in future
         self.photo_list = os.listdir(self.root_photo_folder)
         self.photoCounter = 0
-        initial_photo = Image.open((self.root_photo_folder+"\\"+self.photo_list[self.photoCounter]))
-        converted_photo = ImageTk.PhotoImage(initial_photo)
-
-        
+        while True:
+            try: 
+                initial_photo = Image.open((self.root_photo_folder+"\\"+self.photo_list[self.photoCounter]))
+                converted_photo = ImageTk.PhotoImage(initial_photo)
+                break
+            except:
+                self.photoCounter += 1
 
         self.label = tk.Label(image=converted_photo)
+        self.label.place(relx=0.5, rely=0.5, anchor="center")
 
-        self.label.pack()
+        #self.label.pack()
         self.update_image()
         self.root.wm_attributes("-fullscreen", "True")
         self.root.configure(background="black")
@@ -48,7 +52,7 @@ class App():
                 pass
                 # No other condition needed
                  
-            self.root.after(3000, self.update_image)
+            self.root.after(1500, self.update_image)
             
             #(width, height) = photo.size
             #print("Height: {}, Width: {}".format(height, width))
@@ -74,7 +78,7 @@ class App():
             #do nothing
             print(e)
             self.photoCounter +=1
-            self.root.after(3000, self.update_image)
+            self.root.after(100, self.update_image)
 
 app=App()
 
