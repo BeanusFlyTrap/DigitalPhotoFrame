@@ -1,9 +1,13 @@
+#Import Custom modules
+import settingHandler
 
-# Import the Required Modules
-import tkinter as tk #Used for the Main Display Output
-from PIL import Image, ImageTk #Used for Image Handling / Re-sizing
-import os #Used for Image file Handling
+#Importing Native Python Modules
+import tkinter as tk
+from PIL import Image, ImageTk
+from time import sleep
+import os
 
+#Defining the App as a Class, with local functions defined 
 class App():
     def __init__(self):
         self.root = tk.Tk()
@@ -60,11 +64,13 @@ class App():
             self.root.after(3000, self.update_image)
 
         except Exception as e:
-            #Attempt to Move to next file (hopefully an image one)
+            #do nothing
             print(e)
             self.photoCounter +=1
-            self.root.after(100, self.update_image)
+            self.root.after(3000, self.update_image)
 
 if __name__ == '__main__':
+
+    settingHandler.ensureSettingsExists()
     app=App()
 
