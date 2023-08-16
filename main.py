@@ -1,3 +1,4 @@
+
 # Import the Required Modules
 import tkinter as tk #Used for the Main Display Output
 from PIL import Image, ImageTk #Used for Image Handling / Re-sizing
@@ -36,6 +37,7 @@ class App():
         self.root.wm_attributes("-fullscreen", "True")
         self.root.configure(background="black")
         self.root.mainloop()
+
     def update_image(self):
         try:
             maxheight = int(self.root.winfo_screenheight())
@@ -55,13 +57,14 @@ class App():
                 pass
                 # No other condition needed
                  
-            self.root.after(1500, self.update_image)
-            
+            self.root.after(3000, self.update_image)
+
         except Exception as e:
             #Attempt to Move to next file (hopefully an image one)
             print(e)
             self.photoCounter +=1
             self.root.after(100, self.update_image)
 
-app=App()
+if __name__ == '__main__':
+    app=App()
 
