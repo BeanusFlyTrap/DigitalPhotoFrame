@@ -1,84 +1,50 @@
-#Import Custom modules
-import settingHandler
-
-#Importing Native Python Modules
+import modules.PhotoFrame as PF
 import tkinter as tk
-from PIL import Image, ImageTk
-import os
+from tkinter import ttk
 
-#Defining the App as a Class, with local functions defined 
-class DigitalPhotoFrame:
-    def __init__(self, root, ProgramSettings):
+class MenuSystem:
+    def __init__(self, root):
         self.root = root
-        self.root_photo_folder = ProgramSettings.get("root_photo_folder", "")
 
-        if not self.root_photo_folder:
-            self.root_photo_folder = input("Please enter a folder name")
-            ProgramSettings["root_photo_folder"] = self.root_photo_folder
-            settingHandler.updateSettings(ProgramSettings)
-        else: 
-            pass  
+        self.modules = {
+            'photo_frame': PF.DigitalPhotoFrame(root, ProgramSettings)
+            # Add more modules as needed
+        }
 
-        self.display_duration = ProgramSettings.get("display_duration", 5) * 1000
-        self.current_image_idx = 0
-        self.photo_list = [file for file in os.listdir(self.root_photo_folder) if file.lower().endswith(('.jpg', '.png', '.jpeg'))]
+        self.open_module('photo_frame')
 
-        #generate list of photos
-        self.photo_list = os.listdir(self.root_photo_folder) #Creates a list of files in the folder provided -> this needs to be filtered for image files as it will allow the removal of handling for incompatible files
-        
-        self.label = tk.Label( root, \
-                               borderwidth=0 )
-        self.label.place( relx=0.5, \
-                          rely=0.5, \
-                          anchor="center" )
-        
-        #defining click event to open the settings Gui
-        self.root.bind('<Button-1>', lambda event: self.open_settings())
+    def open_module(self, module_name):
+        # Hide all modules except the specified one
+        for name, module in self.modules.items():
+            if name == module_name:
+                module.label.place(relx=0.5, rely=0.5, anchor="center")
+            else:
+                module.label.place_forget()
 
-        # Bind a keyboard shortcut (e.g., 's') to open settings
-        self.root.bind('s', lambda event: self.open_settings())
+        # Hide or disable other widgets here
+        # For example, you can use widget.place_forget() or widget.config(state="disabled")
 
-        #self.label.pack()
-        self.update_image()
-
-    def update_image(self):
-        try:
-            maxheight = int(self.root.winfo_screenheight())
-            maxwidth = int(self.root.winfo_screenwidth())
-            WinSize = (maxwidth, maxheight)
-
-            photo_path = os.path.join(self.root_photo_folder, self.photo_list[self.current_image_idx])
-            photo = Image.open(photo_path)
-            photo.thumbnail(WinSize)
-            converted_photo = ImageTk.PhotoImage(photo)
-            
-            self.label.configure(image=converted_photo)
-            self.label.image=converted_photo
-            
-            self.current_image_idx = (self.current_image_idx + 1) % len(self.photo_list)
-            self.root.after(self.display_duration, self.update_image)
-
-        except Exception as e:
-            #do nothing
-            print(e)
-            self.current_image_idx = (self.current_image_idx + 1) % len(self.photo_list)
-            self.root.after(self.display_duration, self.update_image)
-
-    def open_settings(self):
-        print("Settings opened")
 
 if __name__ == '__main__':
-    #import settings
-    ProgramSettings = settingHandler.loadSettings()
+    ProgramSettings = {}  # Load your settings here
 
-    #application setup and run
     root = tk.Tk()
     root.title("Digital Photo Frame")
     root.attributes('-fullscreen', True)
     root.configure(background="black")
 
-    app = DigitalPhotoFrame(root, ProgramSettings)
+    menu_system = MenuSystem(root)
+
+    # Create themed buttons for menu navigation using ttk
+    photo_frame_button = ttk.Button(root, text="Photo Frame", style="TButton",
+                                    command=lambda: menu_system.open_module('photo_frame'))
+    # Add more buttons for other modules
+
+    photo_frame_button.place(relx=0.5, rely=0.9, anchor="center")
+    # Position other buttons as needed
+
+    # Create a themed style for the buttons
+    style = ttk.Style()
+    style.configure("TButton", font=("Arial", 20))
 
     root.mainloop()
-
-    #program cleanup
