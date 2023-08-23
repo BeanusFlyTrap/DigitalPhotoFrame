@@ -8,11 +8,22 @@ from time import sleep
 import os
 
 #Defining the App as a Class, with local functions defined 
-class App():
-    def __init__(self):
+class DigitalPhotoFrame():
+    def __init__(self, ProgramSettings):
         self.root = tk.Tk()
         
-        self.root_photo_folder = input("Please enter a folder name") #Change to update config file of some description in future
+        #check root forlder is set in settings
+        if ProgramSettings["root_photo_folder"] == "" :
+            ProgramSettings["root_photo_folder"] = input("Please enter a folder name") #Change to update config file of some description in future
+            settingHandler.updateSettings(ProgramSettings)
+        else: 
+            #No alternative condition needed 
+            
+            pass
+        
+        self.root_photo_folder = ProgramSettings["root_photo_folder"]
+
+        #generate list of photos
         self.photo_list = os.listdir(self.root_photo_folder) #Creates a list of files in the folder provided -> this needs to be filtered for image files as it will allow the removal of handling for incompatible files
         self.photoCounter = 0 #Acts as a pointer for the image on screen
         while True: #Handles potential files incompatible with the image
@@ -71,6 +82,6 @@ class App():
 
 if __name__ == '__main__':
 
-    settingHandler.ensureSettingsExists()
-    app=App()
+    ProgramSettings = settingHandler.loadSettings()
+    app=DigitalPhotoFrame(ProgramSettings)
 
