@@ -22,6 +22,7 @@ class DigitalPhotoFrame():
             pass
         
         self.root_photo_folder = ProgramSettings["root_photo_folder"]
+        self.display_duration = ProgramSettings["display_duration"] * 1000
 
         #generate list of photos
         self.photo_list = os.listdir(self.root_photo_folder) #Creates a list of files in the folder provided -> this needs to be filtered for image files as it will allow the removal of handling for incompatible files
@@ -72,13 +73,13 @@ class DigitalPhotoFrame():
                 pass
                 # No other condition needed
                  
-            self.root.after(3000, self.update_image)
+            self.root.after(self.display_duration, self.update_image)
 
         except Exception as e:
             #do nothing
             print(e)
             self.photoCounter +=1
-            self.root.after(3000, self.update_image)
+            self.root.after(self.display_duration, self.update_image)
 
 if __name__ == '__main__':
 

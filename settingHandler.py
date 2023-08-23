@@ -2,7 +2,8 @@ import os
 import json
 
 default_settings = {
-    "root_photo_folder": ""
+    "root_photo_folder": "",
+    "display_duration": 2
 }
 
 #Checks if Settings file exists, creates a blank one if not
@@ -28,12 +29,3 @@ def updateSettings(new_settings):
         settings = json.dump(new_settings, settings_file)
     
     pass
-
-#sets the root photos folder in settings
-def setPhotosRoot(filepath):
-    pass
-
-#collects the root settings folder from settings
-def getPhotosRoot():
-    pass
-
