@@ -25,8 +25,17 @@ class MenuSystem:
         self.menu_frame = ttk.Frame(self.root)
         self.menu_frame.pack(fill=tk.BOTH, expand=True)
         
+        button_height = self.root.winfo_screenheight() // len(self.modules)
         for module_name in self.modules:
-            ttk.Button(self.menu_frame, text=module_name, command=lambda name=module_name: self.open_module(name)).pack(fill=tk.X)
+            style = ttk.Style()
+            style.configure("Custom.TButton", font=("Arial", 20), height=button_height)
+
+            button = ttk.Button(self.menu_frame, \
+                                text=module_name, \
+                                command=lambda name=module_name: self.open_module(name), \
+                                style="Custom.TButton")
+            
+            button.pack(fill=tk.BOTH, expand=True)
 
     def open_module(self, module_name):
         if self.current_module:
