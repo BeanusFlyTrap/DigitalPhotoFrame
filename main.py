@@ -1,49 +1,60 @@
+#import local modules
 import modules.PhotoFrame as PF
+import modules.MusicApp as MP
+import modules.VideoPlayer as VP
+import utils.settingHandler as SH
+
+#import python modules
 import tkinter as tk
 from tkinter import ttk
 
 class MenuSystem:
-    def __init__(self, root):
+    def __init__(self, root, ProgramSettings):
         self.root = root
-
         self.modules = {
-            'photo_frame': PF.DigitalPhotoFrame(root, ProgramSettings)
-            # Add more modules as needed
+            'Digital Photo Frame': PF.DigitalPhotoFrame(self, ProgramSettings),
+            'Music Player': MP.MusicPlayer(self.root),
+            'Video Player': VP.VideoPlayer(self.root)
         }
+        self.current_module = None
 
-        self.open_module('photo_frame')
+        self.create_ui()
+        self.open_module('digital_photo_frame')
+
+    def create_ui(self):
+        self.menu_frame = ttk.Frame(self.root)
+        self.menu_frame.pack(fill=tk.BOTH, expand=True)
+        
+        for module_name in self.modules:
+            ttk.Button(self.menu_frame, text=module_name, command=lambda name=module_name: self.open_module(name)).pack(fill=tk.X)
 
     def open_module(self, module_name):
-        # Hide all modules except the specified one
-        for name, module in self.modules.items():
-            if name == module_name:
-                module.label.place(relx=0.5, rely=0.5, anchor="center")
-            else:
-                module.label.place_forget()
+        if self.current_module:
+            self.current_module.hide()
 
-        # Hide or disable other widgets here
-        # For example, you can use widget.place_forget() or widget.config(state="disabled")
+        self.current_module = self.modules.get(module_name)
+        if self.current_module:
+            self.current_module.show()
+            self.hide_menu()
+
+    def hide_menu(self):
+        self.menu_frame.pack_forget()
+
+    def show_menu(self):
+        self.menu_frame.pack(fill=tk.BOTH, expand=True)
 
 
 if __name__ == '__main__':
-    ProgramSettings = {}  # Load your settings here
+    ProgramSettings = SH.loadSettings()
 
     root = tk.Tk()
-    root.title("Digital Photo Frame")
+
+    root.title("Raspberry Pi Multimedia App")
     root.attributes('-fullscreen', True)
     root.configure(background="black")
 
-    menu_system = MenuSystem(root)
+    menu = MenuSystem(root, ProgramSettings)
 
-    # Create themed buttons for menu navigation using ttk
-    photo_frame_button = ttk.Button(root, text="Photo Frame", style="TButton",
-                                    command=lambda: menu_system.open_module('photo_frame'))
-    # Add more buttons for other modules
-
-    photo_frame_button.place(relx=0.5, rely=0.9, anchor="center")
-    # Position other buttons as needed
-
-    # Create a themed style for the buttons
     style = ttk.Style()
     style.configure("TButton", font=("Arial", 20))
 
