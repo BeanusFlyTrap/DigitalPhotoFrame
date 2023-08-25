@@ -1,67 +1,70 @@
-# Import the Required Modules
-import tkinter as tk #Used for the Main Display Output
-from PIL import Image, ImageTk #Used for Image Handling / Re-sizing
-import os #Used for Image file Handling
+#import local modules
+import modules.PhotoFrame as PF
+import modules.MusicApp as MP
+import modules.VideoPlayer as VP
+import utils.settingHandler as SH
 
-class App():
-    def __init__(self):
-        self.root = tk.Tk()
+#import python modules
+import tkinter as tk
+from tkinter import ttk
+
+class MenuSystem:
+    def __init__(self, root, ProgramSettings):
+        self.root = root
+        self.modules = {
+            'Digital Photo Frame': PF.DigitalPhotoFrame(self, ProgramSettings),
+            'Music Player': MP.MusicPlayer(self.root),
+            'Video Player': VP.VideoPlayer(self.root)
+        }
+        self.current_module = None
+
+        self.create_ui()
+        self.open_module('digital_photo_frame')
+
+    def create_ui(self):
+        self.menu_frame = ttk.Frame(self.root)
+        self.menu_frame.pack(fill=tk.BOTH, expand=True)
         
-        self.root_photo_folder = input("Please enter a folder name") #Change to update config file of some description in future
-        self.photo_list = os.listdir(self.root_photo_folder) #Creates a list of files in the folder provided -> this needs to be filtered for image files as it will allow the removal of handling for incompatible files
-        self.photoCounter = 0 #Acts as a pointer for the image on screen
-        while True: #Handles potential files incompatible with the image
-            try: 
-                initial_photo = Image.open((self.root_photo_folder+"\\"+self.photo_list[self.photoCounter]))
-                converted_photo = ImageTk.PhotoImage(initial_photo)
-                break
-            except Exception as e:
-                self.photoCounter += 1
-                if self.photoCounter == len(self.photo_list):
-                    self.photoCounter = 0
-                else:
-                    pass
-                # No other condition needed
-                print(e)
+        button_height = self.root.winfo_screenheight() // len(self.modules)
+        for module_name in self.modules:
+            style = ttk.Style()
+            style.configure("Custom.TButton", font=("Arial", 20), height=button_height)
 
-
-        self.label = tk.Label(image=converted_photo, \
-                              borderwidth=0           )
-        self.label.place(relx=0.5,      \
-                         rely=0.5,      \
-                         anchor="center" ) #Centers the image in the window
-
-        #self.label.pack()
-        self.update_image()
-        self.root.wm_attributes("-fullscreen", "True")
-        self.root.configure(background="black")
-        self.root.mainloop()
-    def update_image(self):
-        try:
-            maxheight = int(self.root.winfo_screenheight())
-            maxwidth = int(self.root.winfo_screenwidth())
-            WinSize = (maxwidth, maxheight)
-
-            photo = Image.open((self.root_photo_folder+"\\"+self.photo_list[self.photoCounter]))
-            photo.thumbnail(WinSize)
-            converted_photo = ImageTk.PhotoImage(photo)
+            button = ttk.Button(self.menu_frame, \
+                                text=module_name, \
+                                command=lambda name=module_name: self.open_module(name), \
+                                style="Custom.TButton")
             
-            self.label.configure(image=converted_photo)
-            self.label.image=converted_photo
-            self.photoCounter +=1
-            if self.photoCounter == len(self.photo_list):
-                self.photoCounter = 0
-            else:
-                pass
-                # No other condition needed
-                 
-            self.root.after(1500, self.update_image)
-            
-        except Exception as e:
-            #Attempt to Move to next file (hopefully an image one)
-            print(e)
-            self.photoCounter +=1
-            self.root.after(100, self.update_image)
+            button.pack(fill=tk.BOTH, expand=True)
 
-app=App()
+    def open_module(self, module_name):
+        if self.current_module:
+            self.current_module.hide()
 
+        self.current_module = self.modules.get(module_name)
+        if self.current_module:
+            self.current_module.show()
+            self.hide_menu()
+
+    def hide_menu(self):
+        self.menu_frame.pack_forget()
+
+    def show_menu(self):
+        self.menu_frame.pack(fill=tk.BOTH, expand=True)
+
+
+if __name__ == '__main__':
+    ProgramSettings = SH.loadSettings()
+
+    root = tk.Tk()
+
+    root.title("Raspberry Pi Multimedia App")
+    root.attributes('-fullscreen', True)
+    root.configure(background="black")
+
+    menu = MenuSystem(root, ProgramSettings)
+
+    style = ttk.Style()
+    style.configure("TButton", font=("Arial", 20))
+
+    root.mainloop()
