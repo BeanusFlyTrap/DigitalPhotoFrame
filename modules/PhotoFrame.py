@@ -1,5 +1,6 @@
 #Importing Native Python Modules
 import tkinter as tk
+import random
 from PIL import Image, ImageTk
 import os
 
@@ -20,7 +21,7 @@ class DigitalPhotoFrame:
 
         #generate list of photos
         self.photo_list = os.listdir(self.root_photo_folder) #Creates a list of files in the folder provided -> this needs to be filtered for image files as it will allow the removal of handling for incompatible files
-        
+        random.shuffle(self.photo_list)
         #defining click event to open the settings Gui
         self.parent.bind('<Button-1>', lambda event: self.hide())
 
